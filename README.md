@@ -56,18 +56,11 @@ location / {
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%871.png)
 
-
 ### 注册页面
 <br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%872.png)
-
-### 注册页面
-<br />
-<br />
-
-![image](https://gitee.com/bean6/shopping/raw/master/project-img/%E5%9B%BE%E7%89%874.png)
 
 ### 网盘首页
 <br />
@@ -100,8 +93,6 @@ location / {
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%876.png)
 
 ### 新建文件夹
-<br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%877.png)
 
@@ -117,13 +108,13 @@ location / {
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%879.png)
 
-### 文件加密分享页
+### 查看文件加密分享页
 <br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%8710.png)
 
-### 文件公开分享页
+### 查看文件公开分享页
 <br />
 <br />
 
