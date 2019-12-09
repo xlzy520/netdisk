@@ -52,42 +52,35 @@ location / {
 
 ### 登录页面
 <br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%871.png)
 
 ### 注册页面
-<br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%872.png)
 
 ### 网盘首页
 <br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%873.png)
 
 ### 网盘文件实时搜索
-<br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%874-1.png)
 
 ### 用户信息卡片
 <br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%874-2.png)
 
 ### 文件上传
 <br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%875.png)
 
 ### 导航条
-<br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%876.png)
@@ -98,24 +91,20 @@ location / {
 
 ### 分享功能
 <br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%878.png)
 
 ### 文件分享成功页
-<br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%879.png)
 
 ### 查看文件加密分享页
 <br />
-<br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%8710.png)
 
 ### 查看文件公开分享页
-<br />
 <br />
 
 ![image](https://gitee.com/bean6/netdisk/raw/master/md-img/%E5%9B%BE%E7%89%8711.png)
