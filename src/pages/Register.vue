@@ -5,7 +5,7 @@
         <el-row type="flex" class="row-bg">
           <el-col :span="5">
             <div class="grid-content bg-purple">
-              <el-link @click="$router.push('/user/login')">
+              <el-link @click="$router.push('/login')">
                 <i class="el-icon-back">返回</i>
               </el-link>
             </div>
