@@ -5,7 +5,10 @@ import userApi from "../api/user";
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
-    userInfo: {},
+    userInfo: {
+      token: '',
+      name: ''
+    },
     drawer: {open: false, direction: "ltr"},
     fromFolderId: null,
   },
@@ -36,7 +39,7 @@ const store = new Vuex.Store({
     },
     changeFromFolderId(state, FromFolderId) {
       state.fromFolderId = FromFolderId;
-    }
+    },
   },
   actions: {
     login({ commit }, userInfo) {

@@ -23,10 +23,11 @@ const router = new VueRouter({
     {
       path: "/netdisk/",
       component: header,
+      redirect: '/netdisk/index',
       meta: {title: "网盘"},
       children: [
         {
-          path: 'folder_id/:folder_id',
+          path: 'index',
           component: content,
           meta: {title: "MY网盘-全部文件"}
         },

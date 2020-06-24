@@ -52,10 +52,10 @@ export default {
     },
     openMyFileButton(){
       let curRoute=this.$route.path;
-      if(curRoute.includes('/netdisk/folder_id/0')){
+      if(curRoute.includes('/netdisk/index')){
         return false;
       }else{
-        this.$router.replace('/netdisk/folder_id/0');
+        this.$router.replace('/netdisk');
       }
     },
     openMyShare(){
@@ -83,7 +83,7 @@ export default {
 <style scoped>
 .netdiskHeader {
   max-width: 100%;
-  width: 960px;
+  width: 1160px;
   height:100vh;
   margin: 0 auto;
   background: #fff;

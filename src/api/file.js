@@ -1,13 +1,16 @@
 import baseFetch from './base/fetch'
-const fetch = (url, ...arg) => baseFetch('/order/' + url, ...arg)
+const fetch = (url, ...arg) => baseFetch('/file/' + url, ...arg)
 export default {
-  getOrder(data) {
+  getFile(data) {
     return fetch('list', data)
   },
-  updateOrder(data) {
+  createShare(data) {
+    return fetch('createShare', data)
+  },
+  updateFile(data) {
     return fetch('update', data)
   },
-  deleteOrder(id) {
+  deleteFile(id) {
     return fetch('delete', id)
   },
   orderDetail(id) {
