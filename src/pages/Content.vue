@@ -5,9 +5,9 @@
       <el-button type="primary" icon="el-icon-upload" size="medium"
                  @click="openUpload">上传</el-button>
       <el-button type="success" icon="el-icon-refresh" size="medium"
-                 @click="getUserFile">刷新</el-button>
+                 @click="getUserFile(true)">刷新</el-button>
     </el-row>
-    <el-dialog :visible.sync="visible" title="文件上传" width="645px">
+    <el-dialog :visible.sync="visible" title="文件上传" @close="close" width="645px">
       <!-- 文件上传框 -->
       <el-upload class="upload-demo" drag multiple ref="upload-demo"
                  action="api/file/upload"
@@ -20,7 +20,7 @@
         </el-upload>
     </el-dialog>
     <el-dialog :visible.sync="shareVisible" title="文件分享" width="645px">
-      <div class="shareCreate" >
+      <div class="shareCreate" v-if="!shareInfo.shareUrl">
         <el-form ref="shareform" label-width="70px">
           <el-form-item label="分享形式">
             <el-radio v-model="shareInfo.shareType" label="private">加密（输入提取码才能查看，下载）</el-radio>
@@ -28,31 +28,24 @@
           </el-form-item>
           <el-form-item label>
             <el-button type="primary" @click="confirmCreateShare()">创建链接</el-button>
-            <el-button @click="$store.commit('changeDrawer',[false])">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
-      <div>
+      <div v-else>
         <div ckass="shareSuccess">
-          <el-row>
-            <el-col>
-              <div class="shareMethod">1</div>
-            </el-col>
-            <el-col >
-              <div class="shareUrlText">{{shareInfo['shareUrl']}}
-                <br /><span v-if="shareInfo['shareKey']">密码:{{shareInfo['shareKey']}}</span></div>
-            </el-col>
-            <el-col>
-              <div class="shareMethod">2</div>
-            </el-col>
-            <el-col>
-              <div class="shareQrcode" style="text-align: center;">
-                <el-image :src="shareInfo['shareQrcodeSrc']" v-if="shareInfo['shareQrcodeSrc']"></el-image>
+          <el-form label-width="70px">
+            <el-form-item label="分享链接">
+              <el-tag>
+                {{shareInfo.shareUrl}}
+              </el-tag>
+            </el-form-item>
+            <el-form-item label="密码" v-if="shareInfo.shareKey">{{shareInfo.shareKey}}</el-form-item>
+            <el-form-item label="二维码">
+              <div class="shareQrcode" style="text-align: center;" v-if="shareInfo.shareUrl">
+                <img :src="shareQrcodeSrc" />
               </div>
-            </el-col>
-          </el-row>
-
-
+            </el-form-item>
+          </el-form>
         </div>
 
       </div>
@@ -100,6 +93,7 @@ import axios from "axios";
 import QRCode from "qrcode";
 import { mapGetters } from 'vuex'
 import fileApi from "../api/file";
+import myFetch from "../api/base/fetch";
 
 export default {
   name: "netdiskContent",
@@ -113,11 +107,11 @@ export default {
       shareInfo: {
         id: null,
         shareType: "private",
-        key: null,
+        shareKey: null,
         shareUrl: null,
-        shareQrcodeSrc: null,
         shareStatus: false
       },
+      shareQrcodeSrc: '',
       loading: true,
     };
   },
@@ -146,8 +140,8 @@ export default {
     openUpload (){
       this.visible = true
     },
-    openShare (){
-      this.shareVisible = true
+    close(){
+      this.getUserFile()
     },
     handleSuccess(res, file) {
       const { success, msg, data } = res
@@ -157,25 +151,31 @@ export default {
         this.$message1000(msg, 'error')
       }
     },
-    fullImgSrc(File_ext) {
-      return `${axios.defaults.baseURL}/static/icon/${File_ext}.png`;
+
+    fullDownloadUrl(row) {
+      axios({
+        url: '/api/'+row.path,
+        method:'get',
+        responseType: 'blob'
+      }).then(res=>{
+        const url = URL.createObjectURL(res.data)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = row.name
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      })
     },
-    fullDownloadUrl(FileSaveName) {
-      return `${axios.defaults.baseURL}/uploads/${FileSaveName}`;
-    },
-    fileDelete(fileName, file_id, fileIndex, userId) {
-      this.$confirm(`此操作将删除【${fileName}】文件, 是否继续?`, "提示", {
+    fileDelete(row) {
+      this.$confirm(`此操作将删除【${row.name}】文件, 是否继续?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          api.fileDelete({ file_id, userId }).then(res => {
-            this.userFileData["fileData"]["file"].splice(fileIndex, 1);
-            this.$message({
-              type: "success",
-              message: res.msg
-            });
+      }).then(() => {
+          fileApi.deleteFile({ id: row.id }).then(res => {
+            this.getUserFile()
+            this.$message1000('删除成功');
           });
         })
         .catch(() => {
@@ -185,45 +185,39 @@ export default {
           });
         });
     },
-    getUserFile() {
+    getUserFile(isRefresh) {
       this.loading = true
       fileApi.getFile().then(res => {
         this.userFileData = res.list.rows;
+        if (isRefresh) {
+          this.$message1000('刷新成功')
+        }
       }).finally(() => {
         this.loading = false;
       });
     },
     fileShareButton(row) {
-      this.shareVisible = true
       this.shareInfo = JSON.parse(JSON.stringify(row))
       if(row.shareUrl && !row.shareUrl.includes('share')){
-        this.shareInfo["shareUrl"] = window.location.origin+'/s/'+row.shareUrl;
-      }
-      if (!row.shareType) {
-        this.shareInfo.shareType = 'private'
-      }
-      if(row.shareStatus){
+        this.shareInfo["shareUrl"] = window.location.origin+'/#/s/'+row.shareUrl;
         this.makeQrcode(this.shareInfo.shareUrl).then(res=>{
-          this.shareInfo.shareQrcodeSrc=res;
+          this.shareQrcodeSrc=res;
         });
       }
-      // this.shareInfo["shareStatus"] = shareStatus;
-      // this.shareInfo["fileIndex"]=fileIndex;
+      this.shareVisible = true
     },
     confirmCreateShare() {
-      const { id,shareStatus,shareUrl,shareType } = this.shareInfo
+      const { id,shareStatus = '0',shareType } = this.shareInfo
       const params = {
-        id,shareStatus,shareUrl,shareType
+        id,shareStatus,shareType
       }
       fileApi.createShare(params).then(res=>{
-        console.log(res);
-        // this.shareInfo["key"] = res.key;
-        // this.shareInfo["shareUrl"] = window.location.origin+'/s/'+res['new_share_info']['Share_url'];
-        // this.makeQrcode(this.shareInfo["shareUrl"]).then(urlResult=>{
-        //   this.shareInfo["shareQrcodeSrc"]=urlResult;
-        // });
-        // this.shareInfo["shareStatus"] = true;
-        // this.$message.success(res.msg);
+        this.$message1000('生成分享链接成功')
+        this.shareInfo = res
+        this.shareInfo.shareUrl = window.location.origin+'/#/s/'+res.shareUrl;
+        this.makeQrcode(this.shareInfo.shareUrl).then(urlResult=>{
+          this.shareQrcodeSrc = urlResult;
+        });
       })
     },
     makeQrcode(url){

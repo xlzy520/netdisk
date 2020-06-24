@@ -10,6 +10,7 @@ const whiteList = ['/login', '/register'] // no redirect whitelist
 router.beforeEach(async(to, from, next) => {
   NProgress.start()
   const hasToken = store.getters.userInfo.token
+  console.log(hasToken);
   if (to.meta.title) {
     document.title = to.meta.title;
   }
@@ -17,14 +18,17 @@ router.beforeEach(async(to, from, next) => {
     if (!whiteList.includes(to.path)) {
       try {
         await store.dispatch('getInfo')
-        // next()
+        next()
       } catch (error) {
         next(`/#/login?redirect=${to.path}`)
         NProgress.done()
       }
+    } else {
+      next()
     }
+  } else {
+    next()
   }
-  next()
 })
 
 router.afterEach(() => {

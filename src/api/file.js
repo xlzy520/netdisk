@@ -4,6 +4,9 @@ export default {
   getFile(data) {
     return fetch('list', data)
   },
+  getShareFile(data) {
+    return fetch('shareList', data)
+  },
   createShare(data) {
     return fetch('createShare', data)
   },
