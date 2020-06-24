@@ -6,7 +6,7 @@ import store from "../vuex/store.js";
 
 // axios 配置
 axios.defaults.timeout = 10000;
-axios.defaults.baseURL = 'http://www.wangpan.com/public';
+axios.defaults.baseURL = 'http://localhost:9000';
 
 //POST传参序列化
 axios.interceptors.request.use((config) => {
@@ -115,7 +115,7 @@ export default {
      * @param captcha
 	 */
 	Login(params) {
-		return fetchPost('/user/api/user_login', params);
+		return fetchPost('/user/login', params);
 	},
 	/**
 	 * 用户注册
@@ -178,29 +178,29 @@ export default {
 	 * @param file_id
 	 * @param share_type
 	 * @param expiry_date
-	 */	
+	 */
 	createShare(params){
 		return fetchPost('/netdisk/api/create_share', params);
 	},
 	/**
 	 * 获取用户分享文件列表
 	 * @param userId
-	 */	
+	 */
 	getUserShareList(params){
 		return fetchPost('/netdisk/api/share_list', params);
 	},
 	/**
 	 * 删除分享文件
 	 * @param share_id
-	 */		
+	 */
 	deleteShare(params){
 		return fetchPost('/netdisk/api/share_delete', params);
 	},
 	/**
 	 * 获取分享信息
 	 * @param shareUrl
-	 */		
+	 */
 	getShareView(params){
 		return fetchPost('/netdisk/api/share_view', params);
-	}			
+	}
 }

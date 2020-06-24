@@ -20,8 +20,8 @@
       </div>
       <div class="text item">
         <el-form :model="registerForm" status-icon :rules="rules" ref="registerForm">
-          <el-form-item label="用户名" prop="username">
-            <el-input placeholder="请输入用户名" v-model="registerForm.username"></el-input>
+          <el-form-item label="用户名" prop="name">
+            <el-input placeholder="请输入用户名" v-model="registerForm.name"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input
@@ -39,26 +39,7 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-radio v-model="registerForm.sex" label="male">男</el-radio>
-            <el-radio v-model="registerForm.sex" label="female">女</el-radio>
-          </el-form-item>
 
-          <el-form-item label="专业" prop="major">
-            <el-select
-              v-model="registerForm.major"
-              filterable
-              default-first-option
-              placeholder="——请选择专业——"
-            >
-              <el-option
-                v-for="item in majorOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item>
             <el-button style="width:100%" type="primary" @click="submitForm('registerForm')">注册</el-button>
           </el-form-item>
@@ -69,7 +50,8 @@
 </template>
 
 <script>
-import api from "../fetch/api";
+import userApi from "../api/user";
+import md5 from 'md5'
 export default {
   name: "register",
   data() {
@@ -94,24 +76,12 @@ export default {
     };
     return {
       registerForm: {
-        username: "",
+        name: "",
         password: "",
         checkPassword: "",
-        sex: "male",
-        major: ""
       },
-      majorOption: [
-        {
-          value: "计算机科学与技术",
-          label: "计算机科学与技术"
-        },
-        {
-          value: "软件工程",
-          label: "软件工程"
-        }
-      ],
       rules: {
-        username: [
+        name: [
           { required: true, message: "用户名不能为空", trigger: "blur" },
           { min: 4, message: "用户名长度不能少于4位", trigger: "blur" }
         ],
@@ -122,8 +92,6 @@ export default {
         checkPassword: [
           { required: true, validator: validatePass2, trigger: "blur" }
         ],
-        sex: [{ required: true }],
-        major: [{ required: true, message: "请选择专业", trigger: "blur" }]
       }
     };
   },
@@ -131,17 +99,14 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          api.RegisterUser(this.registerForm).then(res => {
-            if (res.code == 1) {
-              this.$router.replace("/user/login");
-            } else {
-              this.$message({
-                message: res.msg,
-                type: "warning"
-              });
-              this.$refs[formName].resetFields();
-            }
-          });
+          const { name, password } = this.registerForm
+          userApi.register({
+            name,
+            password: md5(password)
+          }).then(res => {
+            this.$message1000('注册成功')
+            this.$router.push("/login");
+          })
         } else {
           console.log("registerForm error submit!!");
           return false;

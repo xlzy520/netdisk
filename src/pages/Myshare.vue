@@ -14,7 +14,7 @@
         <el-collapse accordion>
             <el-collapse-item v-for="(item,index) in filterUserShareList" :key="item.Id">
                 <template slot="title">
-                        <div class="shareType" style="width: 15px;color: #7fb2ff;"> 
+                        <div class="shareType" style="width: 15px;color: #7fb2ff;">
                             <i class="el-icon-lock" ></i>
                         </div>
                         <div class="shareFileImg" style="position: relative;top: 8px;width: 30px;">
@@ -25,7 +25,7 @@
                         </div>
                         <div class="shareFileName" v-else style="color:red">
                             分享已过期
-                        </div>                        
+                        </div>
                 </template>
                 <div class="shareFilUrl"  v-if="item.Share_status">
                     <span>链接</span> ：<el-link type="primary" :underline="false" style="vertical-align: baseline;">{{fullShortUrl(item.Share_url)}}</el-link>
@@ -34,8 +34,8 @@
                 </div>
                 <div class="shareFilUrl" v-else>
                     <el-button type="danger" icon="el-icon-delete" size="mini" style="margin-left: 20px;" @click="deleteShare(item['Id'],index)"></el-button>
-                </div>                
-            </el-collapse-item> 
+                </div>
+            </el-collapse-item>
         </el-collapse>
       </div>
       <div v-else>
@@ -61,8 +61,6 @@
           </div>
           <div class="text item">
             <p>用户名：{{$store.getters.getUserInfo['Username']}}</p>
-            <p>性别：{{$store.getters.getUserInfo['Sex']==null?'':($store.getters.getUserInfo['Sex']=='male'?'男':'女')}}</p>
-            <p>专业：{{$store.getters.getUserInfo['Major']}}</p>
           </div>
         </el-card>
       </div>
@@ -95,7 +93,7 @@ export default {
   },
   created(){
     this.loading = true;
-    this.displayContent = true;      
+    this.displayContent = true;
     this.getUserShareList();
   },
   methods: {
@@ -109,7 +107,7 @@ export default {
         api.getUserShareList({ userId: this.$store.getters.getUserInfo.Id}).then(res => {
           setTimeout(() => {
             if (res.length == 0) this.displayContent = false;
-            else this.displayContent = true;              
+            else this.displayContent = true;
             this.loading = false;
             this.userShareList = res;
           }, 600);
@@ -142,12 +140,12 @@ export default {
             });
         }).catch(error=>{
             console.log("取消分享",error)
-        })    
+        })
     },
     closeDrawer() {
       this.$store.commit("changeDrawer", [false]);
-    },     
-  }  
+    },
+  }
 };
 </script>
 

@@ -12,17 +12,16 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
     overlay: {
       warnings: false,
       errors: false
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost:8000/api`,
+      '/api': {
+        target: `http://localhost:5000`,
         // changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          ['^' + '/api']: ''
         }
       }
     },

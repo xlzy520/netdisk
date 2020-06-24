@@ -6,12 +6,12 @@
           <el-col :span="20" style="font-size: 0;">
             <el-button type="warning" size="small" @click="openMyFileButton()" :class="{'active':active('/netdisk/folder_id/')}">我的文件</el-button>
             <el-button type="warning" size="small" @click="openMyShare()" :class="{'active':active('/netdisk/myshare')}">我的分享</el-button>
-            <el-button type="warning" size="small" @click="$store.commit('changeDrawer',[true,'ltr'])">个人中心</el-button>
           </el-col>
           <el-col :span="4" style="text-align:right;">
-            <el-link type="info" @click="quitUser()">
-              <i class="el-icon-user"></i>退出
-            </el-link>
+            <div style="display: flex">
+              <el-tag style="margin-right: 20px">{{userInfo.name}} </el-tag>
+              <el-button type="danger" size="small" @click="quitUser" icon="user">退出</el-button>
+            </div>
           </el-col>
         </el-row>
       </el-header>
@@ -21,11 +21,17 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
 
     };
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     quitUser() {
@@ -38,7 +44,7 @@ export default {
           type: "success",
           message: "退出系统成功！!"
         });
-        this.$router.replace("/user/login");
+        this.$router.replace("/login");
         this.$store.commit("quitUserInfo");
       }).catch(e=>{
         console.log("取消退出系统：",e);
@@ -50,7 +56,7 @@ export default {
         return false;
       }else{
         this.$router.replace('/netdisk/folder_id/0');
-      }  
+      }
     },
     openMyShare(){
       let curRoute=this.$route.path;
@@ -58,7 +64,7 @@ export default {
         return false;
       }else{
         this.$router.replace('/netdisk/myshare');
-      }      
+      }
     },
     active(url){
       let curRoute=this.$route.path;
@@ -77,7 +83,7 @@ export default {
 <style scoped>
 .netdiskHeader {
   max-width: 100%;
-  width: 640px;
+  width: 960px;
   height:100vh;
   margin: 0 auto;
   background: #fff;
