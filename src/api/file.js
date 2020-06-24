@@ -16,16 +16,7 @@ export default {
   deleteFile(id) {
     return fetch('delete', id)
   },
-  orderDetail(id) {
-    return fetch('detail', id)
-  },
-  fahuo(id) {
-    return fetch('setFaHuo', id)
-  },
-  orderClose(id) {
-    return fetch('close', id)
-  },
-  orderConfirm(data){
-    return fetch('confirm', data)
+  getShareDetail(id) {
+    return fetch('shareDetail', id)
   },
 }

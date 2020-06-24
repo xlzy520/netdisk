@@ -1,35 +1,29 @@
 <template>
   <div class="shareViewBox">
-    <div class="shareFileView" v-if="isShareUrl && hasData">
-      <div class="needPassword" v-if="userShareView['Share_type']=='private'">
+    <div class="shareFileView" v-if="hasData">
+      <div class="needPassword" v-if="userShareView['shareType']=='private'">
         <i class="el-icon-warning-outline"></i>
         <p>文件受密码保护，请输入密码继续下载</p>
         <el-input
           placeholder="请输入提取码"
-          v-model="key"
+          v-model="shareKey"
           show-password
           style="width: 50%;text-align:center"
         ></el-input>
         <el-button type="primary" @click="checkShareKey" :disabled="disabled">确认</el-button>
       </div>
-      <div class="noPaswword" v-else-if="userShareView['Share_type']=='open'">
+      <div class="noPaswword" v-else-if="userShareView['shareType']=='open'">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>{{userShareView.File_name}}</span>
+            <span>{{userShareView.name}}</span>
           </div>
           <div class="text item" style="text-align:left">
-            <p>文件大小：{{userShareView.File_size}}</p>
-            <p>分享时间：{{userShareView.Share_date}}</p>
-            <p>分享用户：{{userShareView.User_name | userNameHidden}}</p>
-            <p>失效时间：{{calcExpiryTime()}}</p>
+            <p>文件大小：renderSize({{userShareView.size}})</p>
+            <p>文件Hash值：{{userShareView.hash}}</p>
+            <p>分享时间：{{userShareView.updatedAt}}</p>
+            <p>分享用户：{{userShareView.user.name}}</p>
             <p style="text-align:center">
-              <el-link
-                :href="fullDownloadUrl(userShareView['File_save_name'])"
-                :download="userShareView['File_name']"
-                :underline="false"
-              >
-                <el-button type="danger" icon="el-icon-download">下载</el-button>
-              </el-link>
+              <el-button @click="fullDownloadUrl(userShareView)" type="danger" icon="el-icon-download">下载</el-button>
             </p>
           </div>
         </el-card>
@@ -43,25 +37,20 @@
 </template>
 
 <script>
-import api from "../fetch/api";
 import axios from "axios";
-import moment from "moment";
+import fileApi from "../api/file";
 export default {
   name: "shareView",
   data() {
     return {
-      isShareUrl: false,
       userShareView: null,
       hasData: false,
-      key: "",
+      shareKey: "",
       disabled: false
     };
   },
   filters: {
     userNameHidden(oldUserName) {
-      //$1返回的是匹配的全部结果
-      //$2返回的是第一个框号的结果
-      //$3返回的是第一个框号的结果
       return (
         oldUserName &&
         oldUserName.replace(/(.)(.+)/g, ($1, $2, $3) => {
@@ -72,97 +61,58 @@ export default {
   },
   watch: {
     "$route.params.shareUrl"() {
-      if (this.checkShareUrl()) {
-        this.getUserShareView();
-      }
+      this.getUserShareView();
     }
   },
   computed: {},
   methods: {
-    checkShareUrl() {
-      let shareUrl = this.$route.params.shareUrl;
-      //判断分享的ID中是否是字母/数字，还ID长度是不是5/6
-      if (
-        /\W/g.test(shareUrl) ||
-        !(shareUrl.length == 5 || shareUrl.length == 6)
-      )
-        this.isShareUrl = false;
-      else this.isShareUrl = true;
-      return this.isShareUrl;
+    renderSize(value){
+      if(null==value || value===''){
+        return "0 B";
+      }
+      const unitArr = ["B","KB","MB","GB","TB","PB","EB","ZB","YB"];
+      let index=0;
+      const srcsize = parseFloat(value);
+      index=Math.floor(Math.log(srcsize)/Math.log(1024));
+      let size =srcsize/Math.pow(1024,index);
+      size=size.toFixed(2);//保留的小数位数
+      return size+unitArr[index];
     },
     getUserShareView() {
-      api
-        .getShareView({ shareUrl: this.$route.params.shareUrl })
-        .then(res => {
-          if (Object.keys(res).length == 0 || res["Share_status"] == false)
-            this.isShareUrl = false;
-          else this.isShareUrl = true;
+      fileApi.getShareDetail({ shareUrl: this.$route.params.shareUrl }).then(res => {
           this.userShareView = res;
           this.hasData = true;
         })
-        .catch(error => {
-          this.isShareUrl = false;
-          this.hasData = false;
-          console.log("获取用户分享查看失败；", error);
-        });
     },
     checkShareKey() {
       this.disabled = true;
-      if (this.key == this.userShareView["key"]) {
-        this.userShareView["Share_type"] = "open";
-      } else {
-        this.$notify.error({
-          title: "错误",
-          message: "提取码错误！",
-          duration: 2000,
-          onClose: () => {
-            this.disabled = false;
-            this.key = "";
-          }
-        });
-      }
+      fileApi.getShareDetail({
+        shareUrl: this.$route.params.shareUrl,
+        shareKey: this.shareKey
+      }).then(res => {
+        this.userShareView = res;
+        this.userShareView["shareType"] = "open";
+        this.hasData = true;
+      })
     },
-    fullDownloadUrl(FileSaveName) {
-      return `${axios.defaults.baseURL}/uploads/${FileSaveName}`;
+    fullDownloadUrl(row) {
+      axios({
+        url: '/api/'+row.path,
+        method:'get',
+        responseType: 'blob'
+      }).then(res=>{
+        const url = URL.createObjectURL(res.data)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = row.name
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      })
     },
-    calcExpiryTime() {
-      if (Object.keys(this.userShareView).length != 0) {
-        if (this.userShareView["Expiry_date"] == 0) {
-          return "永久有效";
-        } else {
-          moment.locale("zh-cn", {
-            relativeTime: {
-              future: "%s后",
-              past: "%s前",
-              s: "几秒",
-              ss: "%d秒",
-              m: "1分钟",
-              mm: "%d分钟",
-              h: "1小时",
-              hh: "%d小时",
-              d: "1天",
-              dd: "%d天",
-              M: "1个月",
-              MM: "%d个月",
-              y: "1年",
-              yy: "%d年"
-            }
-          });
-          return moment(
-            moment
-              .unix(Number.parseInt(this.userShareView["Share_date"]))
-              .format("YYYY-MM-DD HH:mm:ss")
-          )
-            .add(this.userShareView["Expiry_date"], "day")
-            .from();
-        }
-      }
-    }
   },
   created() {
-    if (this.checkShareUrl()) {
-      this.getUserShareView();
-    }
+    this.getUserShareView();
   }
 };
 </script>
