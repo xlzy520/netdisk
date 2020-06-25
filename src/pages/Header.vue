@@ -3,7 +3,7 @@
     <el-container>
       <el-header style="height:60px">
         <el-row type="flex" class="row-bg" justify="center">
-          <el-col :span="20" style="font-size: 0;">
+          <el-col :span="16" style="font-size: 0;">
             <el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal" @select="handleSelect">
               <el-menu-item index="index">我的文件</el-menu-item>
               <el-menu-item index="myshare">我的分享</el-menu-item>
@@ -11,8 +11,9 @@
               <el-menu-item index="files" v-if="isAdmin">文件管理</el-menu-item>
             </el-menu>
           </el-col>
-          <el-col :span="4" style="text-align:right;">
-            <div style="display: flex">
+          <el-col :span="8" style="text-align:right;">
+            <div style="display: flex; justify-content: space-between">
+              <el-link type="info" href="https://aliyunvi.com/filehash" target="_blank">第三方文件hash值查询</el-link>
               <el-tag style="margin-right: 20px">{{userInfo.name}} </el-tag>
               <el-button type="danger" size="small" @click="quitUser" icon="user">退出</el-button>
             </div>
