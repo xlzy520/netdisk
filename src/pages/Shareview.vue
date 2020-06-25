@@ -18,7 +18,7 @@
             <span>{{userShareView.name}}</span>
           </div>
           <div class="text item" style="text-align:left">
-            <p>文件大小：renderSize({{userShareView.size}})</p>
+            <p>文件大小：{{renderSize(userShareView.size)}}</p>
             <p>文件Hash值：{{userShareView.hash}}</p>
             <p>分享时间：{{userShareView.updatedAt}}</p>
             <p>分享用户：{{userShareView.user.name}}</p>
