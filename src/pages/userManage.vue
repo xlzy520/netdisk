@@ -72,7 +72,7 @@
         this.$refs.searchForm.resetFields()
       },
       deleteShare(row) {
-        this.$confirm(`删除该文件，继续吗？`, "确认删除", {
+        this.$confirm(`删除该用户，继续吗？`, "确认删除", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
