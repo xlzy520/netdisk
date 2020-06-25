@@ -7,23 +7,16 @@ export default {
   register(data) {
     return fetch('register', data)
   },
-  getInfo(data) {
+  getInfo() {
     return fetch('info', '', 'get')
   },
-  logout(data) {
-    return fetch('logout', data)
-  },
-  getStaff(data) {
+  getUserList(data) {
     return fetch('list', data)
   },
-  updateStaff(data) {
+  updateUser(data) {
     return fetch('update', data)
   },
-  deleteStaff(id) {
+  deleteUser(id) {
     return fetch('delete', id)
   },
-  changePassword(data){
-    return fetch('resetPassword', data)
-  }
-  
 }

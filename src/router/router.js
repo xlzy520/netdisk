@@ -7,6 +7,8 @@ const register = () => import('../pages/Register.vue');
 const header = () => import('../pages/Header.vue');
 const content = () => import('../pages/Content.vue');
 const myshare = () => import('../pages/Myshare.vue');
+const fileManage = () => import('../pages/fileManage.vue');
+const userManage = () => import('../pages/userManage.vue');
 const shareview = () => import('../pages/Shareview.vue');
 const notFound = () => import('../pages/404.vue');
 Vue.use(VueRouter);
@@ -35,6 +37,16 @@ const router = new VueRouter({
           path: 'myshare',
           component: myshare,
           meta: {title: "MY网盘-我的分享"}
+        },
+        {
+          path: 'user',
+          component: userManage,
+          meta: {title: "用户管理"}
+        },
+        {
+          path: 'files',
+          component: fileManage,
+          meta: {title: "文件管理"}
         }
       ]
     },

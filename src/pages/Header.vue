@@ -4,8 +4,12 @@
       <el-header style="height:60px">
         <el-row type="flex" class="row-bg" justify="center">
           <el-col :span="20" style="font-size: 0;">
-            <el-button type="warning" size="small" @click="openMyFileButton()" :class="{'active':active('/netdisk/folder_id/')}">我的文件</el-button>
-            <el-button type="warning" size="small" @click="openMyShare()" :class="{'active':active('/netdisk/myshare')}">我的分享</el-button>
+            <el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal" @select="handleSelect">
+              <el-menu-item index="index">我的文件</el-menu-item>
+              <el-menu-item index="myshare">我的分享</el-menu-item>
+              <el-menu-item index="user" v-if="isAdmin">用户管理</el-menu-item>
+              <el-menu-item index="files" v-if="isAdmin">文件管理</el-menu-item>
+            </el-menu>
           </el-col>
           <el-col :span="4" style="text-align:right;">
             <div style="display: flex">
@@ -25,13 +29,16 @@
 export default {
   data() {
     return {
-
+      activeIndex: 'index',
     };
   },
   computed: {
     ...mapGetters([
       'userInfo'
-    ])
+    ]),
+    isAdmin(){
+      return this.userInfo.role === 'admin';
+    }
   },
   methods: {
     quitUser() {
@@ -50,37 +57,25 @@ export default {
         console.log("取消退出系统：",e);
       });
     },
-    openMyFileButton(){
-      let curRoute=this.$route.path;
-      if(curRoute.includes('/netdisk/index')){
-        return false;
-      }else{
-        this.$router.replace('/netdisk');
-      }
+    handleSelect(key, keyPath){
+      this.activeIndex = key
     },
-    openMyShare(){
-      let curRoute=this.$route.path;
-      if(curRoute.includes('/netdisk/myshare')){
-        return false;
-      }else{
-        this.$router.replace('/netdisk/myshare');
-      }
-    },
-    active(url){
-      let curRoute=this.$route.path;
-      if(curRoute.includes(url)){
-        return true;
-      }else{
-        return false;
-      }
-    }
   },
   mounted(){
+    const route = this.$route.path.split('/')[2]
+    this.handleSelect(route)
   }
 };
 </script>
 
-<style scoped>
+<style>
+  .el-menu--horizontal>.el-menu-item{
+    height: 40px;
+    line-height: 40px;
+  }
+  .el-menu.el-menu--horizontal{
+    border-bottom: none;
+  }
 .netdiskHeader {
   max-width: 100%;
   width: 1160px;

@@ -4,6 +4,9 @@ export default {
   getFile(data) {
     return fetch('list', data)
   },
+  getAdminFileList(data) {
+    return fetch('adminList', data)
+  },
   getShareFile(data) {
     return fetch('shareList', data)
   },
@@ -19,4 +22,5 @@ export default {
   getShareDetail(id) {
     return fetch('shareDetail', id)
   },
+  
 }

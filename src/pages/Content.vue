@@ -1,5 +1,5 @@
 <template>
-  <el-main style="height:calc(100vh - 60px);padding-top:0;" justify="center">
+  <el-main style="height:calc(100vh - 60px);padding-top: 20px;" justify="center">
     <!-- 上传 搜索 新建文件 -->
     <el-row type="flex" class="row-bg">
       <el-button type="primary" icon="el-icon-upload" size="medium"
@@ -70,7 +70,7 @@
               <span>{{renderSize(scope.row.size)}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="updatedAt" label="上传时间" width="180"></el-table-column>
+          <el-table-column prop="createdAt" label="上传时间" width="180"></el-table-column>
           <el-table-column label="操作" align="right">
             <template slot-scope="scope">
               <el-button @click="fileShareButton(scope.row)" icon="el-icon-share" type="primary"
@@ -88,12 +88,10 @@
 </template>
 
 <script>
-import api from "../fetch/api";
 import axios from "axios";
 import QRCode from "qrcode";
 import { mapGetters } from 'vuex'
 import fileApi from "../api/file";
-import myFetch from "../api/base/fetch";
 
 export default {
   name: "netdiskContent",

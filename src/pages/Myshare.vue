@@ -1,5 +1,5 @@
 <template>
-  <el-main style="height:500px;padding-top:0;" justify="center">
+  <el-main style="height:500px;padding-top: 20px;" justify="center">
     <!-- 数据懒加载 -->
     <div class="wait" v-loading="loading" style="height:300px;">
       <div class="displayContent">
