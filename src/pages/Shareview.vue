@@ -1,106 +1,109 @@
 <template>
   <div class="shareViewBox">
-    <div class="shareFileView" v-if="hasData">
-      <div class="needPassword" v-if="userShareView['shareType']=='private'">
-        <i class="el-icon-warning-outline"></i>
+    <div v-if="hasData" class="shareFileView">
+      <div v-if="userShareView['shareType']=='private'" class="needPassword">
+        <i class="el-icon-warning-outline" />
         <p>文件受密码保护，请输入密码继续下载</p>
         <el-input
-          placeholder="请输入提取码"
           v-model="shareKey"
+          placeholder="请输入提取码"
           show-password
           style="width: 50%;text-align:center"
-        ></el-input>
-        <el-button type="primary" @click="checkShareKey" :disabled="disabled">确认</el-button>
+        />
+        <el-button type="primary" :disabled="disabled" @click="checkShareKey">确认</el-button>
       </div>
-      <div class="noPaswword" v-else-if="userShareView['shareType']=='open'">
+      <div v-else-if="userShareView['shareType']=='open'" class="noPaswword">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>{{userShareView.name}}</span>
+            <span>{{ userShareView.name }}</span>
           </div>
           <div class="text item" style="text-align:left">
-            <p>文件大小：{{renderSize(userShareView.size)}}</p>
-            <p>文件Hash值：{{userShareView.hash}}</p>
-            <p>分享时间：{{userShareView.updatedAt}}</p>
-            <p>分享用户：{{userShareView.user.name}}</p>
+            <p>文件大小：{{ renderSize(userShareView.size) }}</p>
+            <p>文件Hash值：{{ userShareView.hash }}</p>
+            <p>分享时间：{{ userShareView.updatedAt }}</p>
+            <p>分享用户：{{ userShareView.user.name }}</p>
             <p style="text-align:center">
-              <el-button @click="fullDownloadUrl(userShareView)" type="danger" icon="el-icon-download">下载</el-button>
+              <el-button type="danger" icon="el-icon-download" @click="fullDownloadUrl(userShareView)">下载</el-button>
             </p>
           </div>
         </el-card>
       </div>
     </div>
-    <div class="shareNoFound" v-else>
-      <i class="el-icon-warning-outline"></i>
+    <div v-else class="shareNoFound">
+      <i class="el-icon-warning-outline" />
       <p style="color: #b3b3b3;">来晚啦...文件取消分享了</p>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import fileApi from "../api/file";
+import axios from 'axios'
+import fileApi from '../api/file'
 export default {
-  name: "shareView",
-  data() {
-    return {
-      userShareView: null,
-      hasData: false,
-      shareKey: "",
-      disabled: false
-    };
-  },
+  name: 'ShareView',
   filters: {
     userNameHidden(oldUserName) {
       return (
         oldUserName &&
         oldUserName.replace(/(.)(.+)/g, ($1, $2, $3) => {
-          return $2 + "*".repeat($3.length);
+          return $2 + '*'.repeat($3.length)
         })
-      );
+      )
     }
   },
-  watch: {
-    "$route.params.shareUrl"() {
-      this.getUserShareView();
+  data() {
+    return {
+      userShareView: null,
+      hasData: false,
+      shareKey: '',
+      disabled: false
     }
   },
   computed: {},
+  watch: {
+    '$route.params.shareUrl'() {
+      this.getUserShareView()
+    }
+  },
+  created() {
+    this.getUserShareView()
+  },
   methods: {
-    renderSize(value){
-      if(null==value || value===''){
-        return "0 B";
+    renderSize(value) {
+      if (value == null || value === '') {
+        return '0 B'
       }
-      const unitArr = ["B","KB","MB","GB","TB","PB","EB","ZB","YB"];
-      let index=0;
-      const srcsize = parseFloat(value);
-      index=Math.floor(Math.log(srcsize)/Math.log(1024));
-      let size =srcsize/Math.pow(1024,index);
-      size=size.toFixed(2);//保留的小数位数
-      return size+unitArr[index];
+      const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      let index = 0
+      const srcsize = parseFloat(value)
+      index = Math.floor(Math.log(srcsize) / Math.log(1024))
+      let size = srcsize / Math.pow(1024, index)
+      size = size.toFixed(2)// 保留的小数位数
+      return size + unitArr[index]
     },
     getUserShareView() {
       fileApi.getShareDetail({ shareUrl: this.$route.params.shareUrl }).then(res => {
-          this.userShareView = res;
-          this.hasData = true;
-        })
+        this.userShareView = res
+        this.hasData = true
+      })
     },
     checkShareKey() {
-      this.disabled = true;
+      this.disabled = true
       fileApi.getShareDetail({
         shareUrl: this.$route.params.shareUrl,
         shareKey: this.shareKey
       }).then(res => {
-        this.userShareView = res;
-        this.userShareView["shareType"] = "open";
-        this.hasData = true;
+        this.userShareView = res
+        this.userShareView['shareType'] = 'open'
+        this.hasData = true
       })
     },
     fullDownloadUrl(row) {
       axios({
-        url: '/api/'+row.path,
-        method:'get',
+        url: '/api/' + row.path,
+        method: 'get',
         responseType: 'blob'
-      }).then(res=>{
+      }).then(res => {
         const url = URL.createObjectURL(res.data)
         const a = document.createElement('a')
         a.href = url
@@ -109,12 +112,9 @@ export default {
         a.click()
         document.body.removeChild(a)
       })
-    },
-  },
-  created() {
-    this.getUserShareView();
+    }
   }
-};
+}
 </script>
 
 <style scoped>

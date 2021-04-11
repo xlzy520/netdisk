@@ -1,45 +1,45 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import userApi from "../api/user";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import userApi from '../api/user'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     userInfo: {
       token: '',
       name: ''
     },
-    drawer: {open: false, direction: "ltr"},
-    fromFolderId: null,
+    drawer: { open: false, direction: 'ltr' },
+    fromFolderId: null
   },
   getters: {
     userInfo(state) {
-      return state.userInfo;
+      return state.userInfo
     },
     getDrawerInfo(state) {
-      return state.drawer;
+      return state.drawer
     },
     getFromFolderId(state) {
-      return state.fromFolderId;
+      return state.fromFolderId
     }
   },
   mutations: {
     addUserInfo(state, userInfo) {
-      state.userInfo = userInfo;
+      state.userInfo = userInfo
     },
     quitUserInfo(state) {
-      state.userInfo = {};
+      state.userInfo = {}
     },
-    changeDrawer(state, drawer = [false, "ltr"]) {
-      let [open, direction = 'ltr'] = drawer;
+    changeDrawer(state, drawer = [false, 'ltr']) {
+      const [open, direction = 'ltr'] = drawer
       state.drawer = {
         open,
         direction
-      };
+      }
     },
     changeFromFolderId(state, FromFolderId) {
-      state.fromFolderId = FromFolderId;
-    },
+      state.fromFolderId = FromFolderId
+    }
   },
   actions: {
     login({ commit }, userInfo) {
@@ -62,13 +62,12 @@ const store = new Vuex.Store({
         })
       })
     },
-  
-  
+
     awaitChangeAccountMoney(context, money) {
       setTimeout(() => {
-        context.commit("changeAccountMoney", money)
+        context.commit('changeAccountMoney', money)
       }, 10)
     }
   }
 })
-export default store;
+export default store

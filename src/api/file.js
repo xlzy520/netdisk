@@ -21,6 +21,6 @@ export default {
   },
   getShareDetail(id) {
     return fetch('shareDetail', id)
-  },
-  
+  }
+
 }

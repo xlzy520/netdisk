@@ -18,5 +18,5 @@ export default {
   },
   deleteUser(id) {
     return fetch('delete', id)
-  },
+  }
 }

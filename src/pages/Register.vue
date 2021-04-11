@@ -11,7 +11,7 @@
             </div>
           </el-col>
           <el-col :span="5">
-            <div class="grid-content bg-purple-light"></div>
+            <div class="grid-content bg-purple-light" />
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple">注册页面</div>
@@ -19,25 +19,25 @@
         </el-row>
       </div>
       <div class="text item">
-        <el-form :model="registerForm" status-icon :rules="rules" ref="registerForm">
+        <el-form ref="registerForm" :model="registerForm" status-icon :rules="rules">
           <el-form-item label="用户名" prop="name">
-            <el-input placeholder="请输入用户名" v-model="registerForm.name"></el-input>
+            <el-input v-model="registerForm.name" placeholder="请输入用户名" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input
+              v-model="registerForm.password"
               type="password"
               placeholder="请输入密码"
-              v-model="registerForm.password"
               autocomplete="off"
-            ></el-input>
+            />
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPassword">
             <el-input
+              v-model="registerForm.checkPassword"
               type="password"
               placeholder="请再次输入密码"
-              v-model="registerForm.checkPassword"
               autocomplete="off"
-            ></el-input>
+            />
           </el-form-item>
 
           <el-form-item>
@@ -50,50 +50,50 @@
 </template>
 
 <script>
-import userApi from "../api/user";
+import userApi from '../api/user'
 import md5 from 'md5'
 export default {
-  name: "register",
+  name: 'Register',
   data() {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
-        if (this.registerForm.checkPassword !== "") {
-          this.$refs.registerForm.validateField("checkPassword");
+        if (this.registerForm.checkPassword !== '') {
+          this.$refs.registerForm.validateField('checkPassword')
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.registerForm.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       registerForm: {
-        name: "",
-        password: "",
-        checkPassword: "",
+        name: '',
+        password: '',
+        checkPassword: ''
       },
       rules: {
         name: [
-          { required: true, message: "用户名不能为空", trigger: "blur" },
-          { min: 4, message: "用户名长度不能少于4位", trigger: "blur" }
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
+          { min: 4, message: '用户名长度不能少于4位', trigger: 'blur' }
         ],
         password: [
-          { min: 6, message: "密码长度不能少于6位", trigger: "blur" },
-          { required: true, validator: validatePass, trigger: "blur" }
+          { min: 6, message: '密码长度不能少于6位', trigger: 'blur' },
+          { required: true, validator: validatePass, trigger: 'blur' }
         ],
         checkPassword: [
-          { required: true, validator: validatePass2, trigger: "blur" }
-        ],
+          { required: true, validator: validatePass2, trigger: 'blur' }
+        ]
       }
-    };
+    }
   },
   methods: {
     submitForm(formName) {
@@ -105,16 +105,16 @@ export default {
             password: md5(password)
           }).then(res => {
             this.$message1000('注册成功')
-            this.$router.push("/login");
+            this.$router.push('/login')
           })
         } else {
-          console.log("registerForm error submit!!");
-          return false;
+          console.log('registerForm error submit!!')
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -7,66 +7,66 @@
             <el-menu :default-active="activeIndex" router class="el-menu-demo" mode="horizontal" @select="handleSelect">
               <el-menu-item index="index">我的文件</el-menu-item>
               <el-menu-item index="myshare">我的分享</el-menu-item>
-              <el-menu-item index="user" v-if="isAdmin">用户管理</el-menu-item>
-              <el-menu-item index="files" v-if="isAdmin">文件管理</el-menu-item>
+              <el-menu-item v-if="isAdmin" index="user">用户管理</el-menu-item>
+              <el-menu-item v-if="isAdmin" index="files">文件管理</el-menu-item>
             </el-menu>
           </el-col>
           <el-col :span="8" style="text-align:right;">
             <div style="display: flex; justify-content: space-between">
               <el-link type="info" href="https://aliyunvi.com/filehash" target="_blank">第三方文件hash值查询</el-link>
-              <el-tag style="margin-right: 20px">{{userInfo.name}} </el-tag>
-              <el-button type="danger" size="small" @click="quitUser" icon="user">退出</el-button>
+              <el-tag style="margin-right: 20px">{{ userInfo.name }} </el-tag>
+              <el-button type="danger" size="small" icon="user" @click="quitUser">退出</el-button>
             </div>
           </el-col>
         </el-row>
       </el-header>
-      <router-view></router-view>
+      <router-view />
     </el-container>
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      activeIndex: 'index',
-    };
+      activeIndex: 'index'
+    }
   },
   computed: {
     ...mapGetters([
       'userInfo'
     ]),
-    isAdmin(){
-      return this.userInfo.role === 'admin';
+    isAdmin() {
+      return this.userInfo.role === 'admin'
     }
+  },
+  mounted() {
+    const route = this.$route.path.split('/')[2]
+    this.handleSelect(route)
   },
   methods: {
     quitUser() {
-      this.$confirm("确认退出系统，是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确认退出系统，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         this.$message({
-          type: "success",
-          message: "退出系统成功！!"
-        });
-        this.$router.replace("/login");
-        this.$store.commit("quitUserInfo");
-      }).catch(e=>{
-        console.log("取消退出系统：",e);
-      });
+          type: 'success',
+          message: '退出系统成功！!'
+        })
+        this.$router.replace('/login')
+        this.$store.commit('quitUserInfo')
+      }).catch(e => {
+        console.log('取消退出系统：', e)
+      })
     },
-    handleSelect(key, keyPath){
+    handleSelect(key, keyPath) {
       this.activeIndex = key
-    },
-  },
-  mounted(){
-    const route = this.$route.path.split('/')[2]
-    this.handleSelect(route)
+    }
   }
-};
+}
 </script>
 
 <style>

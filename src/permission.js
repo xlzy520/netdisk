@@ -10,24 +10,13 @@ const shareFileRoute = '/s/'
 
 router.beforeEach(async(to, from, next) => {
   NProgress.start()
-  const hasToken = store.getters.userInfo.token
-  console.log(to.path);
-  console.log(hasToken);
+  // const hasToken = store.getters.userInfo.token
   if (to.meta.title) {
-    document.title = to.meta.title;
+    document.title = to.meta.title
   }
-  if (!hasToken) {
-    if (!whiteList.includes(to.path) && !to.path.includes(shareFileRoute)) {
-      try {
-        await store.dispatch('getInfo')
-        next()
-      } catch (error) {
-        next(`/#/login?redirect=${to.path}`)
-        NProgress.done()
-      }
-    } else {
-      next()
-    }
+  if (!whiteList.includes(to.path) && !to.path.includes(shareFileRoute)) {
+    next(`/#/login?redirect=${to.path}`)
+    NProgress.done()
   } else {
     next()
   }

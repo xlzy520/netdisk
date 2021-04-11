@@ -1,28 +1,28 @@
 <template>
   <div class="container">
-    <el-card class="box-card" v-loading="loading">
+    <el-card v-loading="loading" class="box-card">
       <div slot="header" class="clearfix" style="text-align:center">
         <span>登录页面</span>
       </div>
       <div class="text item">
-        <el-form :model="loginForm" :rules="rules" ref="loginForm">
+        <el-form ref="loginForm" :model="loginForm" :rules="rules">
           <el-form-item label="用户名" prop="name">
-            <el-input placeholder="请输入用户名" v-model="loginForm.name"></el-input>
+            <el-input v-model="loginForm.name" placeholder="请输入用户名" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input
+              v-model="loginForm.password"
               type="password"
               placeholder="请输入密码"
-              v-model="loginForm.password"
               autocomplete="off"
               show-password
-            ></el-input>
+            />
           </el-form-item>
           <el-form-item>
-            <el-button style="width:100%" type="primary" @click="submit('loginForm')" :loading="submitLoading">登录</el-button>
+            <el-button style="width:100%" type="primary" :loading="submitLoading" @click="submit('loginForm')">登录</el-button>
           </el-form-item>
           <el-form-item>
-              <el-button style="width:100%" @click="$router.push('/register')">注册</el-button>
+            <el-button style="width:100%" @click="$router.push('/register')">注册</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -30,62 +30,60 @@
   </div>
 </template>
 
-
 <script>
-import userApi from "../api/user";
+import userApi from '../api/user'
 import md5 from 'md5'
 export default {
-  name: "login",
+  name: 'Login',
   data() {
     return {
-      loading:false,
+      loading: false,
       loginForm: {
-        name: "",
-        password: "",
+        name: '',
+        password: ''
       },
-      submitLoading:false,
+      submitLoading: false,
       rules: {
         name: [
-          { required: true, message: "用户名不能为空", trigger: "blur" }
+          { required: true, message: '用户名不能为空', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "密码不能为空", trigger: "blur" }
-        ],
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ]
       }
-    };
+    }
   },
-  created(){
+  created() {
 
   },
   methods: {
     submit(formName) {
-      this.submitLoading=true;
+      this.submitLoading = true
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loading=true;
+          this.loading = true
           const { name, password } = this.loginForm
           userApi.login({
             name,
             password: md5(password)
           }).then(res => {
-            console.log(res);
-            this.$store.commit('addUserInfo',res);
+            console.log(res)
+            this.$store.commit('addUserInfo', res)
             this.$router.push('/netdisk')
           }).finally(() => {
             this.loading = false
-            this.submitLoading=false;
-          });
+            this.submitLoading = false
+          })
         } else {
-          console.log("error submit!!");
-          this.submitLoading=false;
-          return false;
+          console.log('error submit!!')
+          this.submitLoading = false
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
-
 
 <style scoped>
 html,
