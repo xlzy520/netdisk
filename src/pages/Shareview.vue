@@ -88,6 +88,10 @@ export default {
       })
     },
     checkShareKey() {
+      if(!this.shareKey){
+        this.$message.error('请输入密码')
+        return
+      }
       this.disabled = true
       fileApi.getShareDetail({
         shareUrl: this.$route.params.shareUrl,

@@ -21,12 +21,7 @@ baseRequest.interceptors.response.use(
       })
       // token已过期
       if (res.code === 401) {
-        expire++
-        if (expire < 2) {
-          expire = true
-          router.push('/login')
-          expire = 0
-        }
+        router.push('/login')
       }
       return Promise.reject(res)
     } else {
